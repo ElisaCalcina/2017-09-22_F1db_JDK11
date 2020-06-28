@@ -1,8 +1,12 @@
 package it.polito.tdp.formulaone;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import it.polito.tdp.formulaone.model.Adiacenze;
 import it.polito.tdp.formulaone.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +26,7 @@ public class FXMLController {
     private URL location;
 
     @FXML
-    private ComboBox<?> boxAnno;
+    private ComboBox<Integer> boxAnno;
 
     @FXML
     private Button btnSelezionaStagione;
@@ -44,6 +48,24 @@ public class FXMLController {
 
     @FXML
     void doSelezionaStagione(ActionEvent event) {
+    	txtResult.clear();
+    	
+    	Integer anno= this.boxAnno.getValue();
+    	
+    	if(anno==null) {
+    		txtResult.appendText("Devi scegliere un anno");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(anno);
+    	txtResult.appendText("Grafo creato\n");
+    	txtResult.appendText("#vertici: "+ this.model.nVertici()+"\n");
+    	txtResult.appendText("#archi: "+ this.model.nArchi()+"\n");
+    	
+    	List<Adiacenze> result= this.model.getPeso();
+    		for(Adiacenze a: result) {
+    		txtResult.appendText(a.toString()+"\n");
+    	}
 
     }
 
@@ -66,5 +88,6 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		this.boxAnno.getItems().addAll(this.model.getSeason());
 	}
 }
